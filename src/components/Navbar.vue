@@ -1,9 +1,18 @@
 <script>
 export default {
-  data(){
+  data() {
     return {
-      isActive: false,
-    }
+      hoveredLink: null,
+      activeLink: null,
+
+      routes: this.$router.options.routes,
+    };
+  },
+
+  methods: {
+    activateLink(index) {
+      this.activeLink = index;
+    },
   },
 };
 </script>
@@ -13,20 +22,35 @@ export default {
     <div class="nav_logo_container">
       <img src="/src/assets/img/shared/logo.svg" class="nav_logo" alt="" />
     </div>
-    <div class="nav_link_container ">
+    <div class="nav_link_container">
       <ul class="nav_link_list barlow-condensed-regular">
-        <li class="link-item" :class="{active: isActive}">
-          <span class="barlow-condensed-bold">00</span> Home
-        </li>
-        <li class="link-item" :class="{active: isActive}">
-          <span class="barlow-condensed-bold">01</span> Destination
-        </li>
-        <li class="link-item" :class="{active: isActive}">
-          <span class="barlow-condensed-bold">02</span> Crew
-        </li>
-        <li class="link-item" :class="{active: isActive}">
-          <span class="barlow-condensed-bold">03</span> Technology
-        </li>
+        <RouterLink
+          v-for="(route, index) in routes"
+          :key="index"
+          :to="route.path"
+          class="link-item"
+          :class="{
+            active: activeLink === index,
+            hover: hoveredLink === index,
+          }"
+          @mouseover="hoveredLink = index"
+          @mouseout="hoveredLink = null"
+          @click="activateLink(index)"
+          >{{ route.link }}</RouterLink
+        >
+        <!-- <li
+          :key="index"
+          class="link-item"
+          :class="{
+            active: activeLink === index,
+            hover: hoveredLink === index,
+          }"
+          @mouseover="hoveredLink = index"
+          @mouseout="hoveredLink = null"
+          @click="activateLink(index)"
+        >
+          {{ link }}
+        </li> -->
       </ul>
     </div>
   </div>
@@ -45,45 +69,65 @@ export default {
 
   gap: 5rem;
 }
-
 .nav_link_container {
   display: flex;
   align-items: center;
 }
 
 .nav_link_container::before {
+  clear: both;
   content: "";
   display: block;
-  width: 40rem;
+  width: 30rem;
   height: 1px;
   background-color: #9797975f;
+  z-index: 1;
+  margin-right: -20px;
 }
 
 .nav_link_list {
-  display: flex;
   background-color: rgba(188, 186, 186, 0.125);
   backdrop-filter: blur(4px);
 
   padding: 2.5rem;
 
-  span {
-    margin-right: 0.5rem;
-  }
+  display: flex;
+  align-items: center;
 
-  .link-item {
-    margin: 0rem 3rem;
-    font-size: 18px;
-    letter-spacing: 2.7px;
-    line-height: 19px;
-    filter: none;
-  }
-  .link-item:hover{
-   border-bottom: 1px solid white;
-  }
+  gap: 6rem;
 
-  .active{
-    border-bottom: 1px solid red;
-  }
+  cursor: pointer;
+}
 
+.link-item {
+  font-size: 18px;
+  letter-spacing: 2.7px;
+  line-height: 19px;
+  position: relative;
+
+  color: inherit;
+}
+
+.link-item::after {
+  clear: both;
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.link-item.active::after {
+  background-color: #ffff;
+  opacity: 1;
+}
+
+.link-item.hover::after {
+  background-color: #979797;
+  opacity: 1;
 }
 </style>

@@ -85,5 +85,9 @@ section {
     aspect-ratio: 1;
     border-radius: 50%;
   }
+
+  .landing_button:hover{
+    box-shadow: 0px 0px 0px 60px #97979770;
+  }
 }
 </style>
